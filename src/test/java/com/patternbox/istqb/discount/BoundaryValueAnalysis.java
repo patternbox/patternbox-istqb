@@ -65,6 +65,8 @@ public class BoundaryValueAnalysis {
 		assertEquals("Bondary 15K, no discount", price, calc.calculate(price), DELTA);
 		price = boundary;
 		assertEquals("Bondary 15K, discount 5%", discount(price, 0.05), calc.calculate(price), DELTA);
+		price = boundary + ONE_CENT;
+		assertEquals("Bondary 15K, discount 5%", discount(price, 0.05), calc.calculate(price), DELTA);
 	}
 
 	/**
@@ -73,7 +75,9 @@ public class BoundaryValueAnalysis {
 	@Test
 	public void testBoundary20K() {
 		final double boundary = 20000;
-		double price = boundary;
+		double price = boundary - ONE_CENT;
+		assertEquals("Bondary 20K, discount 5%", discount(price, 0.05), calc.calculate(price), DELTA);
+		price = boundary;
 		assertEquals("Bondary 20K, discount 5%", discount(price, 0.05), calc.calculate(price), DELTA);
 		price = boundary + ONE_CENT;
 		assertEquals("Bondary 20K, discount 7%", discount(price, 0.07), calc.calculate(price), DELTA);
@@ -88,6 +92,8 @@ public class BoundaryValueAnalysis {
 		double price = boundary - ONE_CENT;
 		assertEquals("Bondary 25K, discount 7%", discount(price, 0.07), calc.calculate(price), DELTA);
 		price = boundary;
+		assertEquals("Bondary 25K, discount 8.5%", discount(price, 0.085), calc.calculate(price), DELTA);
+		price = boundary + ONE_CENT;
 		assertEquals("Bondary 25K, discount 8.5%", discount(price, 0.085), calc.calculate(price), DELTA);
 	}
 }
