@@ -32,20 +32,21 @@ package com.patternbox.istqb.atm;
  */
 public class ATM {
 
+	private ProcessStatus status = ProcessStatus.IDLE;
+
 	public Card process(Card card, Callback callback) {
-		if (CardStatus.FREE.equals(card.getStatus())) {
-			card.setStatus(CardStatus.IN_PROCESS);
+		if (card.isValid()) {
 			try {
 				if (requestPIN(card, callback)) {
-					callback.dispenseCash(requestAmount(card, callback));
+					dispenseCash(callback, requestAmount(card, callback));
 				} else {
-					card.setStatus(CardStatus.CONFISCATED);
 					return null;
 				}
 			} catch (ProcessCanceledException e) {
 				// nothing to do here
+			} finally {
+				status = ProcessStatus.IDLE;
 			}
-			card.setStatus(CardStatus.FREE);
 		}
 		return card;
 	}
@@ -62,6 +63,7 @@ public class ATM {
 	 *           the card holder canceled the process
 	 */
 	private boolean requestPIN(Card card, Callback callback) throws ProcessCanceledException {
+		status = ProcessStatus.REQUEST_PIN;
 		while (card.getPinCounter() < 3) {
 			if (card.checkPIN(callback.getPIN())) {
 				card.resetPinCounter();
@@ -80,11 +82,12 @@ public class ATM {
 	 *          the card instance
 	 * @param callback
 	 *          the callback interface
-	 * @return <code>true</code>, if PIN was correct
+	 * @return the amount of money
 	 * @throws ProcessCanceledException
 	 *           the card holder canceled the process
 	 */
 	private double requestAmount(Card card, Callback callback) throws ProcessCanceledException {
+		status = ProcessStatus.REQUEST_AMOUNT;
 		double amount;
 		for (;;) {
 			amount = callback.getAmount();
@@ -92,5 +95,25 @@ public class ATM {
 				return amount;
 			}
 		}
+	}
+
+	/**
+	 * Dispense requested amount of money in cash.
+	 * 
+	 * @param callback
+	 *          the callback interface
+	 * @param amount
+	 *          the amount of money
+	 */
+	private void dispenseCash(Callback callback, double amount) {
+		status = ProcessStatus.PERFORM_TRANSACTION;
+		callback.dispenseCash(amount);
+	}
+
+	/**
+	 * Return the ATM status
+	 */
+	public ProcessStatus getStatus() {
+		return status;
 	}
 }

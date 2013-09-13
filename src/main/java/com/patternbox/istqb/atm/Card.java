@@ -38,7 +38,7 @@ public class Card {
 
 	private int counter = 0;
 
-	private CardStatus status = CardStatus.FREE;
+	private boolean valid = true;
 
 	/**
 	 * Constructor
@@ -51,21 +51,6 @@ public class Card {
 	public Card(int pin, double balance) {
 		this.pin = pin;
 		this.balance = balance;
-	}
-
-	/**
-	 * @return the status
-	 */
-	public CardStatus getStatus() {
-		return status;
-	}
-
-	/**
-	 * @param state
-	 *          the state to set
-	 */
-	public void setStatus(CardStatus state) {
-		this.status = state;
 	}
 
 	/**
@@ -101,5 +86,20 @@ public class Card {
 	 */
 	public double getBalance() {
 		return balance;
+	}
+
+	/**
+	 * @return the valid
+	 */
+	public boolean isValid() {
+		return valid;
+	}
+
+	/**
+	 * @param valid
+	 *          the valid to set
+	 */
+	public void setValid(boolean valid) {
+		this.valid = valid;
 	}
 }
