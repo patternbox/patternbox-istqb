@@ -32,8 +32,6 @@ package com.patternbox.istqb.atm;
  */
 public class ATM {
 
-	private ProcessStatus status = ProcessStatus.IDLE;
-
 	public Card process(Card card, Callback callback) {
 		if (card.isValid()) {
 			try {
@@ -44,8 +42,6 @@ public class ATM {
 				}
 			} catch (ProcessCanceledException e) {
 				// nothing to do here
-			} finally {
-				status = ProcessStatus.IDLE;
 			}
 		}
 		return card;
@@ -63,7 +59,6 @@ public class ATM {
 	 *           the card holder canceled the process
 	 */
 	private boolean requestPIN(Card card, Callback callback) throws ProcessCanceledException {
-		status = ProcessStatus.REQUEST_PIN;
 		while (card.getPinCounter() < 3) {
 			if (card.checkPIN(callback.getPIN())) {
 				card.resetPinCounter();
@@ -87,7 +82,6 @@ public class ATM {
 	 *           the card holder canceled the process
 	 */
 	private double requestAmount(Card card, Callback callback) throws ProcessCanceledException {
-		status = ProcessStatus.REQUEST_AMOUNT;
 		double amount;
 		for (;;) {
 			amount = callback.getAmount();
@@ -106,14 +100,6 @@ public class ATM {
 	 *          the amount of money
 	 */
 	private void dispenseCash(Callback callback, double amount) {
-		status = ProcessStatus.PERFORM_TRANSACTION;
 		callback.dispenseCash(amount);
-	}
-
-	/**
-	 * Return the ATM status
-	 */
-	public ProcessStatus getStatus() {
-		return status;
 	}
 }

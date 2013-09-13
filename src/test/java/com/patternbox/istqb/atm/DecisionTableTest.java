@@ -48,7 +48,6 @@ public class DecisionTableTest {
 	@Before
 	public void setUp() throws Exception {
 		atm = new ATM();
-		assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.IDLE);
 	}
 
 	/**
@@ -78,7 +77,6 @@ public class DecisionTableTest {
 		// check result
 		assertEquals(card, card2);
 		assertFalse("Card valid status wrong", card2.isValid());
-		assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.IDLE);
 	}
 
 	/**
@@ -93,7 +91,6 @@ public class DecisionTableTest {
 			private boolean pinFlag = false;
 
 			public int getPIN() throws ProcessCanceledException {
-				assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.REQUEST_PIN);
 				if (pinFlag) {
 					throw new ProcessCanceledException();
 				}
@@ -114,7 +111,6 @@ public class DecisionTableTest {
 		assertEquals(card, card2);
 		assertTrue("Card valid  status wrong", card2.isValid());
 		assertEquals("PIN counter wrong", 1, card2.getPinCounter());
-		assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.IDLE);
 	}
 
 	/**
@@ -129,7 +125,6 @@ public class DecisionTableTest {
 			private int cnt = 0;
 
 			public int getPIN() {
-				assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.REQUEST_PIN);
 				if (++cnt > 3) {
 					fail("PIN more than 3 times requested");
 				}
@@ -147,7 +142,6 @@ public class DecisionTableTest {
 		});
 		// check result
 		assertNull("Card not confiscated", card2);
-		assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.IDLE);
 	}
 
 	/**
@@ -162,12 +156,10 @@ public class DecisionTableTest {
 			private boolean amountFlag = false;
 
 			public int getPIN() {
-				assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.REQUEST_PIN);
 				return 1234;
 			}
 
 			public double getAmount() throws ProcessCanceledException {
-				assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.REQUEST_AMOUNT);
 				if (amountFlag) {
 					throw new ProcessCanceledException();
 				}
@@ -183,7 +175,6 @@ public class DecisionTableTest {
 		assertEquals(card, card2);
 		assertTrue("Card valid  status wrong", card2.isValid());
 		assertEquals("PIN counter wrong", 0, card2.getPinCounter());
-		assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.IDLE);
 	}
 
 	/**
@@ -197,17 +188,14 @@ public class DecisionTableTest {
 		Card card2 = atm.process(card, new Callback() {
 
 			public int getPIN() {
-				assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.REQUEST_PIN);
 				return 1234;
 			}
 
 			public double getAmount() throws ProcessCanceledException {
-				assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.REQUEST_AMOUNT);
 				return cashRequest;
 			}
 
 			public void dispenseCash(double amount) {
-				assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.PERFORM_TRANSACTION);
 				assertEquals("Dispensed amount wrong", cashRequest, amount, 0.0001);
 			}
 		});
@@ -215,6 +203,5 @@ public class DecisionTableTest {
 		assertEquals(card, card2);
 		assertTrue("Card valid  status wrong", card2.isValid());
 		assertEquals("PIN counter wrong", 0, card2.getPinCounter());
-		assertEquals("ATM status wrong", atm.getStatus(), ProcessStatus.IDLE);
 	}
 }
