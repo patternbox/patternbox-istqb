@@ -28,6 +28,6 @@ package com.patternbox.istqb.atm;
 /**
  * @author <a href='http://www.patternbox.com'>D. Ehms, Patternbox<a>
  */
-public enum ProcessStatus {
+public enum XX ProcessStatus {
 	IDLE, READING_CARD, READING_PIN, PERFORM_TRANSACTION;
 }
