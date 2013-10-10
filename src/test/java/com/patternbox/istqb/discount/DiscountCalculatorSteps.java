@@ -25,30 +25,45 @@ SUCH DAMAGE.
  ******************************************************************************/
 package com.patternbox.istqb.discount;
 
+import static org.junit.Assert.assertEquals;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+
 /**
- * Discount calculator
- * 
  * @author <a href='http://www.patternbox.com'>D. Ehms, Patternbox<a>
  */
-public class DiscountCalculator {
+public class DiscountCalculatorSteps {
 
-	private static final double MAX_PRICE = 1000000.0;
+	private static final double DELTA = 0.00001;
 
-	/**
-	 * Return the discounted price
-	 */
-	public double calculate(double price) throws IllegalPriceException {
-		if (price < 0) {
-			throw new IllegalPriceException(price);
-		} else if (price < 15000) {
-			return price;
-		} else if (price <= 20000) {
-			return price - (price * 0.05);
-		} else if (price < 25000) {
-			return price - (price * 0.07);
-		} else if (price <= MAX_PRICE) {
-			return price - (price * 0.085);
+	private DiscountCalculator calc;
+
+	private double price;
+
+	@Given("^you are buying a new car$")
+	public void createDiscountCalculator() {
+		calc = new DiscountCalculator();
+	}
+
+	@When("^the recommended retail price of the car is (.+) Euro$")
+	public void setPrice(String price) {
+		this.price = Double.parseDouble(price);
+	}
+
+	@Then("^you have to pay (.+) Euro$")
+	public void checkDiscount(String expectedPrice) {
+		double actualPrice = calc.calculate(price);
+		assertEquals(Double.parseDouble(expectedPrice), actualPrice, DELTA);
+	}
+
+	@Then("^an IllegalPriceException is thrown$")
+	public void throwIllegalPriceException() {
+		try {
+			calc.calculate(price);
+			throw new RuntimeException("Something went wrong.");
+		} catch (IllegalPriceException e) {
+			// everything is fine
 		}
-		throw new IllegalPriceException(price);
 	}
 }

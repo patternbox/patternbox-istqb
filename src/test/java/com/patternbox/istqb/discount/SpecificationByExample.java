@@ -25,30 +25,14 @@ SUCH DAMAGE.
  ******************************************************************************/
 package com.patternbox.istqb.discount;
 
+import org.junit.runner.RunWith;
+
+import cucumber.api.junit.Cucumber;
+
 /**
- * Discount calculator
- * 
  * @author <a href='http://www.patternbox.com'>D. Ehms, Patternbox<a>
  */
-public class DiscountCalculator {
-
-	private static final double MAX_PRICE = 1000000.0;
-
-	/**
-	 * Return the discounted price
-	 */
-	public double calculate(double price) throws IllegalPriceException {
-		if (price < 0) {
-			throw new IllegalPriceException(price);
-		} else if (price < 15000) {
-			return price;
-		} else if (price <= 20000) {
-			return price - (price * 0.05);
-		} else if (price < 25000) {
-			return price - (price * 0.07);
-		} else if (price <= MAX_PRICE) {
-			return price - (price * 0.085);
-		}
-		throw new IllegalPriceException(price);
-	}
+@RunWith(Cucumber.class)
+@Cucumber.Options(format = { "pretty", "html:target/cucumber" })
+public class SpecificationByExample {
 }
